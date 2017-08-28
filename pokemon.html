@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Gotta catch em all</title>
+  <link rel="icon" type="image/png" href="http://www.pokemongofreehack.net/img/favicon.png" />
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+
+  <script type="text/javascript" src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      for (var i = 1; i < 152; i++) {
+        var pokeImage = '<img class ="poke-image" data-poke-id=' + i + ' src ="http://pokeapi.co/media/img/' + i + '.png"width="60" alt="Unloaded ' + i + '">'
+        $('.poke-container').append(pokeImage);
+
+
+      }
+    });
+    $(document).on('click', 'img.poke-image', function() {
+      // Reference the clicked image
+      var img = $(this);
+      // Set all images to the deselected state
+      $('img.poke-image').removeClass('selected');
+      // Set the clicked image to selected
+      img.addClass('selected');
+      // Get the character's id from the "data-poke-id" attribute
+      var id = img.data('poke-id');
+      // Reteive the character's info
+      getPokemon(id);
+    });
+
+    function getPokemon(id) {
+      var path = 'http://pokeapi.co/api/v2/pokemon/' + id;
+      // console.log('Getting pokemon from', path, '...');
+      $('.individual').html('Loading...');
+      $.ajax({
+        type: 'GET',
+        url: path,
+        contentType: 'application/json; charset=utf-8',
+        success: function(data) {
+          // If successful
+          console.log(data);
+          var html = '<img src ="http://pokeapi.co/media/img/' + id + '.png" width="60">';
+          html += '<strong>' + data.name.toUpperCase() + ' #' + id + '</strong>';
+          html += '<ul>';
+          $.each(data.abilities, function(i, item) {
+            console.log(item);
+            html += '<li>' + item.ability.name + '</li>';
+          });
+          html += '</ul>';
+          $('.individual').html(html);
+        },
+        error: function(status, error) {
+          // If an error occurs
+          console.log(status);
+          console.log(error);
+          $('.individual').html('An error occured!');
+        }
+      });
+    }
+  </script>
+
+
+
+
+</head>
+<style>
+  .wrapper {
+    width: 950px;
+    height: 1000px;
+    display: inline-block;
+  }
+
+  .individual {
+    width: 20%;
+    height: auto;
+    display: inline-block;
+    margin-top: 200px;
+    border-style: solid;
+  }
+
+  .poke-container {
+    width: 60%;
+    display: inline-block;
+    vertical-align: top;
+  }
+</style>
+
+<body>
+  <div class="wrapper">
+    <div class="poke-container">
+    </div>
+    <div class="individual">No character loaded.</div>
+
+
+
+  </div>
+  </div>
+
+</body>
+
+</html>
