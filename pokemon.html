@@ -14,8 +14,6 @@
       for (var i = 1; i < 152; i++) {
         var pokeImage = '<img class ="poke-image" data-poke-id=' + i + ' src ="http://pokeapi.co/media/img/' + i + '.png"width="60" alt="Unloaded ' + i + '">'
         $('.poke-container').append(pokeImage);
-
-
       }
     });
     $(document).on('click', 'img.poke-image', function() {
@@ -27,11 +25,15 @@
       img.addClass('selected');
       // Get the character's id from the "data-poke-id" attribute
       var id = img.data('poke-id');
+
+      // console.log(img.attr('data-poke-id', 99 + 2));
+
       // Reteive the character's info
       getPokemon(id);
     });
 
     function getPokemon(id) {
+
       var path = 'http://pokeapi.co/api/v2/pokemon/' + id;
       // console.log('Getting pokemon from', path, '...');
       $('.individual').html('Loading...');
@@ -40,15 +42,26 @@
         url: path,
         contentType: 'application/json; charset=utf-8',
         success: function(data) {
-          // If successful
+          // If successful -
           console.log(data);
           var html = '<img src ="http://pokeapi.co/media/img/' + id + '.png" width="60">';
           html += '<strong>' + data.name.toUpperCase() + ' #' + id + '</strong>';
           html += '<ul>';
-          $.each(data.abilities, function(i, item) {
-            console.log(item);
-            html += '<li>' + item.ability.name + '</li>';
+          $.each(data.types, function(j, type) {
+            html += '<li>' + 'Type: ' + (j + 1) + ' ' + type.type.name + '</li>';
+            console.log(type);
           });
+          // console.log(data.types.name);
+          // html += '<li>' + '<strong>' + "Type: " + '</strong>' + data.types.name + '</li>';
+          html += '<li>' + '<strong>' + "Height: " + '</strong>' + data.height + '</li>';
+          html += '<li>' + '<strong>' + "Weight: " + '</strong>' + data.weight + '</li>';
+          $.each(data.abilities, function(i, item) {
+            // multiple abilities
+            console.log(item);
+
+            html += '<li>' + 'Ability: ' + (i + 1) + ' ' + item.ability.name + '</li>';
+          });
+
           html += '</ul>';
           $('.individual').html(html);
         },
@@ -85,6 +98,12 @@
     width: 60%;
     display: inline-block;
     vertical-align: top;
+  }
+
+  img.poke-image:hover,
+  img.poke-image.selected {
+    background-color: grey;
+    border-radius: 4px;
   }
 </style>
 
